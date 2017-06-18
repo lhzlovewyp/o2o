@@ -1,0 +1,63 @@
+<style>
+    .page-list .pagination {float:left;}
+    .page-list .pagination span {cursor: pointer;}
+    .page-list .pagination .separate span{cursor: default; border-top:none;border-bottom:none;}
+    .page-list .pagination .separate span:hover {background: none;}
+    .page-list .page-total {float:left; margin: 25px 20px;}
+    .page-list .page-total input, .page-list .page-total select{height: 26px; border: 1px solid #ddd;}
+    .page-list .page-total input {width: 40px; padding-left:3px;}
+    .page-list .page-total select {width: 50px;}
+</style>
+<section class="content">
+	<div class="box">
+		<div class="box-header">
+			<h3 class="box-title">销售交易设定</h3>
+		</div>
+		<div class="box-header">
+			<div class="input-group input-group-sm" style="width: 80%">
+				<input type="text" name="table_search"
+					class="form-control " placeholder="门店编号" id="input3" ng-model="selectForm.storeCode" style="width:20%">
+				<input type="text" name="table_search"
+					class="form-control " placeholder="门店名称" id="input4" ng-model="selectForm.storeName" style="width:20%">
+				<input type="text" name="table_search"
+					class="form-control" placeholder="营业日期" id="input2" ng-model="selectForm.salesDate" style="width:20%" data-provide="datepicker-inline" data-date-format="yyyy-mm-dd">
+				<button type="submit" class="btn btn-primary" ng-click="queryByPage()">
+						<i class="fa fa-search"></i>
+			    </button>
+			</div>
+			
+		</div>
+		<div class="box-body">
+			<div class="table-responsive mailbox-messages">
+				<table class="table table-hover">
+					<tr>
+						<th width="30"><button type="button"
+								class="btn btn-default btn-sm checkbox-toggle">
+								<i class="fa fa-square-o"></i>
+							</button></th>
+						<th>门店</th>
+						<th>收银终端</th>
+						<th>营业日期</th>
+						<th>销售最大交易序号</th>
+						<th>操作</th>
+					</tr>
+					<tr ng-repeat="result in basicsInfo.results"  on-render-finish>
+						<td align="center"><input type="checkbox" ng-click="check(result.id,chk)" ng-model="chk"></td>
+		                <td>{{result.store.name}}</td>
+		                <td>{{result.terminal.name}}</td>
+		                <td>{{result.salesDate | date:'yyyy-MM-dd'}}</td>
+		                <td>{{result.maxCode}}</td>
+						<td><a href="/backend/edit/salesConfig/{{result.id}}" class="btn btn-info btn-xs">编辑</a></td>
+		            </tr>
+				</table>
+			</div>
+			<div class="row">
+				<div class="col-sm-5">
+					<div class="dataTables_info">{{basicsInfo.pageNo}}/{{basicsInfo.totalPage}}</div>
+				</div>
+				<tm-pagination conf="paginationConf"></tm-pagination>
+			</div>
+		</div>
+		<!-- /.box-body -->
+	</div>
+</section>

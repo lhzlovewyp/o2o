@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.RetailPriceMapper">
+     
+    
+    <resultMap type="retailPrice" id="retailPrice">
+		<result property="id" column="ID" />
+		<result property="client.id" column="Client" />
+		<result property="store.id" column="Store" />
+		<result property="material.id" column="Material" />
+		<result property="unit.id" column="Unit" />
+		<result property="price" column="Price" />
+		<result property="effectiveDate" column="EffectiveDate" />
+		<result property="expiryDate" column="ExpiryDate" />
+		<result property="creator" column="Creator" />
+		<result property="created" column="Created" />
+		<result property="editor" column="Editor" />
+		<result property="modified" column="Modified" />
+	</resultMap>
+	
+	<resultMap type="retailPrice" id="retailPricePage" extends="retailPrice">
+		<result property="client.name" column="ClientName" />
+		<result property="store.name" column="StoreName" />
+	</resultMap>
+    
+    <select id="getMaterialPrice" resultMap="retailPrice">
+    	select ID,Client,Store,Material,Unit,Price,EffectiveDate,ExpiryDate
+    	from RetailPrice
+    	where Client=#{clientId} and Store=#{storeId} and Material=#{materialId}
+    	<![CDATA[  
+    	and Unit=#{unitId} and EffectiveDate<=#{searchDate}
+    	and (ExpiryDate is null or ExpiryDate>=#{searchDate})
+    	]]>
+    </select>
+	
+	<select id="getRetailPriceByID" parameterType="string" resultMap="retailPrice">
+		SELECT 
+			a.ID,a.Client,a.Store,a.Material,a.Unit,a.Price,a.EffectiveDate,a.ExpiryDate,a.Creator,a.Created,a.Editor,a.Modified
+		FROM RetailPrice a
+		WHERE a.ID=#{id} 
+	</select>
+	
+	<select id="getRetailPricePageByCondition" parameterType="java.util.Map" resultMap="retailPricePage">
+		SELECT 
+			a.ID,a.Client,a.Store,a.Material,a.Unit,a.Price,a.EffectiveDate,a.ExpiryDate,a.Creator,a.Created,a.Editor,a.Modified
+			,c.Name ClientName,s.Name StoreName
+		FROM RetailPrice a left outer join Client c
+		on a.Client = c.id and c.status = 1 
+		left outer join Store s
+		on a.Store = s.id and s.status = 1 
+		join Material m on m.ID=a.Material
+		WHERE 
+			1 = 1
+			<if test="storeCode != null">
+				and s.Code=#{storeCode}
+			</if>
+			<if test="storeName != null">
+				and s.Name like CONCAT('%','${storeName}','%' )  
+			</if>
+			<if test="mcode != null">
+				and m.Code=#{mcode}
+			</if>
+			<if test="mname != null">
+				and m.Name like CONCAT('%','${mname}','%' )  
+			</if>
+			<if test="effDate != null">
+				<![CDATA[  and a.EffectiveDate>=#{effDate}]]>
+			</if>
+			<if test="expDate != null">
+				<![CDATA[  and a.ExpiryDate<=#{expDate}]]>
+			</if>
+			
+			order by a.ID desc
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getRetailPriceCountByCondition" parameterType="java.util.Map" resultType="int">
+		SELECT count(1)
+		FROM RetailPrice a WHERE 
+			1 = 1
+			<if test="clientId != null">
+				and a.Client=#{clientId}
+			</if>
+	</select>
+	
+	<delete id="deleteRetailPriceByID" parameterType="string">
+		DELETE FROM RetailPrice where ID =#{id}f
+	</delete>
+	
+	<insert id="insertRetailPrice" parameterType="retailPrice">
+		insert into RetailPrice <include refid="retailPriceSet" />
+	</insert>
+	
+	<update id="updateRetailPrice" parameterType="retailPrice" >
+		UPDATE RetailPrice <include refid="retailPriceSet" /> WHERE ID = #{id}
+	</update>
+    
+    <sql id="retailPriceSet">
+		<set >
+			<if test= "id != null">ID=#{id,jdbcType=VARCHAR},</if >
+			<if test= "client != null">Client=#{client.id,jdbcType=VARCHAR},</if >
+			<if test= "store != null">Store=#{store.id,jdbcType=VARCHAR},</if >
+			<if test= "material != null">Material=#{material.id,jdbcType=VARCHAR},</if >
+			<if test= "unit != null">Unit=#{unit.id,jdbcType=VARCHAR},</if >
+			<if test= "price != null">Price=#{price},</if >
+			<if test= "effectiveDate != null">EffectiveDate=#{effectiveDate},</if >
+			<if test= "expiryDate != null">ExpiryDate=#{expiryDate},</if >
+			<if test= "creator != null">Creator=#{creator},</if >
+			<if test= "created != null">Created=#{created},</if >
+			<if test= "editor != null">Editor=#{editor,jdbcType=VARCHAR},</if >
+			<if test= "modified != null">Modified=#{modified},</if >
+		</set>
+	</sql >
+
+</mapper>

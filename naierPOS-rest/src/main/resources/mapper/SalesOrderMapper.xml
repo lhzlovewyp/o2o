@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.SalesOrderMapper">
+     
+    
+    <resultMap type="salesOrder" id="salesOrderSum">
+		<result property="store.id" column="Store" />
+		<result property="amount" column="Amount" />
+		<result property="quantity" column="Num" />
+	</resultMap>
+	
+	<resultMap type="salesOrder" id="salesOrder">
+		<result property="id" column="ID"/>
+		<result property="client.id" column="Client"/>
+		<result property="transClass" column="TransClass"/>
+		<result property="store.id" column="Store"/>
+		<result property="salesDate" column="SalesDate"/>
+		<result property="code" column="Code"/>
+		<result property="originOrder.id" column="OriginOrder"/>
+		<result property="member.member" column="Member"/>
+		<result property="member.memberCode" column="MemberCode"/>
+		<result property="member.memberName" column="MemberName"/>
+		<result property="member.memberMobile" column="MemberMobile"/>
+		<result property="member.memberGrade" column="MemberGrade"/>
+		<result property="shoppingGuide.id" column="ShoppingGuide"/>
+		<result property="quantity" column="Quantity"/>
+		<result property="amount" column="Amount"/>
+		<result property="discount" column="Discount"/>
+		<result property="minusChange" column="MinusChange"/>
+		<result property="payable" column="Payable"/>
+		<result property="paid" column="Paid"/>
+		<result property="excess" column="Excess"/>
+		<result property="cancelPromotion" column="CancelPromotion"/>
+		<result property="status" column="Status"/>
+		<result property="creator" column="Creator"/>
+		<result property="created" column="Created"/>
+		<result property="finished" column="Finished"/>
+		<result property="toBaison" column="ToBaison"/>
+	</resultMap>
+	
+	<resultMap type="salesOrderDetails" id="salesOrderDetails">
+		<result property="id" column="ID"/>
+		<result property="client.id" column="Client"/>
+		<result property="salesOrder.id" column="SalesOrder"/>
+		<result property="transClass" column="TransClass"/>
+		<result property="store.id" column="Store"/>
+		<result property="salesDate" column="SalesDate"/>
+		<result property="code" column="Code"/>
+		<result property="serialNo" column="SerialNo"/>
+		<result property="itemClass.code" column="ItemClass"/>
+		<result property="material.id" column="Item"/>
+		<result property="color.id" column="Color"/>
+		<result property="size.id" column="Size"/>
+		<result property="quantity" column="Quantity"/>
+		<result property="salesUnit.id" column="SalesUnit"/>
+		<result property="basicQuantity" column="BasicQuantity"/>
+		<result property="basicUnit.id" column="BasicUnit"/>
+		<result property="conversion" column="Conversion"/>
+		<result property="price" column="Price"/>
+		<result property="amount" column="Amount"/>
+		<result property="discount" column="Discount"/>
+		<result property="minusChange" column="MinusChange"/>
+		<result property="payable" column="Payable"/>
+		<result property="promotion.id" column="Promotion"/>
+	</resultMap>
+	
+	<resultMap type="salesOrderPay" id="salesOrderPay">
+		<result property="id" column="ID"/>
+		<result property="client.id" column="Client"/>
+		<result property="salesOrder.id" column="SalesOrder"/>
+		<result property="transClass" column="TransClass"/>
+		<result property="store.id" column="Store"/>
+		<result property="salesDate" column="SalesDate"/>
+		<result property="code" column="Code"/>
+		<result property="serialNo" column="SerialNo"/>
+		<result property="payTime" column="PayTime"/>
+		<result property="payment.code" column="Payment"/>
+		<result property="payment.name" column="PaymentName"/>
+		<result property="amount" column="Amount"/>
+		<result property="changed" column="Changed"/>
+		<result property="excess" column="Excess"/>
+		<result property="transNo" column="TransNo"/>
+	</resultMap>
+	
+	<resultMap type="salesOrderDiscount" id="salesOrderDiscount">
+		<result property="id" column="ID"/>
+		<result property="client.id" column="Client"/>
+		<result property="salesOrder.id" column="SalesOrder"/>
+		<result property="transClass" column="TransClass"/>
+		<result property="store.id" column="Store"/>
+		<result property="salesDate" column="SalesDate"/>
+		<result property="code" column="Code"/>
+		<result property="disc" column="DISC"/>
+		<result property="mat" column="MAT"/>
+		<result property="amount" column="Amount"/>
+	</resultMap>
+	
+    <select id="getSalesInfo"  resultMap="salesOrderSum">
+		SELECT Store ,SUM(Amount) AS Amount,COUNT(1) AS Num FROM SalesOrder
+		WHERE Store=#{storeId} AND Client=#{clientId} and SalesDate=#{salesDate,jdbcType=DATE}  and Status=1 and TransClass='SO'
+		 GROUP BY Store
+	</select>
+	
+	<select id="getSalesOrderPageByCondition" resultMap="salesOrder" parameterType="java.util.Map">
+		select so.*,sg.name as ShoppingGuideName from SalesOrder so
+		left join 
+		ShoppingGuide sg 
+		ON so.ShoppingGuide=sg.id 
+		where so.TransClass='SO'
+		and so.Store=#{storeId} and so.Client=#{clientId}
+		<if test="id != null">
+				and so.ID=#{id}
+		</if>
+		
+		<if test="startDate != null">
+				<![CDATA[  and so.salesDate>=#{startDate} ]]>
+		</if>
+		<if test="endDate != null">
+				<![CDATA[  and so.salesDate<=#{endDate}]]>
+		</if>
+		<if test="status != null">
+				<![CDATA[  and so.Status=#{stauts}]]>
+		</if>
+		<if test="memberMobile != null">
+				<![CDATA[  and so.MemberMobile=#{memberMobile}]]>
+		</if>
+		order by Finished desc
+		<if test="start != null and limit != null">
+				limit #{start},#{limit}
+		</if>
+	</select>
+	
+	<select id="getSalesOrderDetailById" resultMap="salesOrderDetails">
+		select * from SalesOrderDetails where SalesOrder=#{salesOrderId} order by   SerialNo
+	</select>
+	<select id="getSalesOrderPayById" resultMap="salesOrderPay">
+		SELECT sp.*,p.Name as PaymentName FROM SalesOrderPay sp, Payment p WHERE sp.Payment=p.Code
+       and sp.SalesOrder=#{salesOrderId} order by  sp.SerialNo
+	</select>
+	<select id="getSalesOrderDiscountById" resultMap="salesOrderDiscount">
+		select * from SalesOrderDiscount where SalesOrder=#{salesOrderId}
+	</select>
+	
+	<select id="getSalesOrderCountByCondition" parameterType="java.util.Map" resultType="int">
+		select count(1) from SalesOrder where TransClass='SO'
+		and Store=#{storeId} and Client=#{clientId}
+		
+		<if test="id != null">
+				and ID=#{id}
+		</if>
+		
+		<if test="startDate != null">
+		<![CDATA[  and salesDate>=#{startDate}]]>		
+		</if>
+		
+		<if test="endDate != null">
+				<![CDATA[  and salesDate<=#{endDate} ]]>
+		</if>
+		
+	</select>
+	
+	<insert id="saveSalesOrder" parameterType="salesOrder">
+		insert into SalesOrder <include refid="salesOrderSet" />  
+	</insert>
+	<update id="updateSalesOrder" parameterType="salesOrder">
+		update SalesOrder  <include refid="salesOrderSet" />   where ID=#{id}
+	</update>
+	
+	
+	<sql id="salesOrderSet">
+         <set>
+              <if test= "id != null">ID=#{id},</if>
+              <if test= "client != null">Client=#{client.id},</if>
+              <if test= "transClass != null">transClass=#{transClass},</if>
+              <if test= "store != null">Store=#{store.id},</if>
+              <if test= "salesDate != null">SalesDate=#{salesDate},</if>
+              <if test= "code != null and code!=0 ">Code=#{code},</if>
+              <if test= "originOrder != null">OriginOrder=#{originOrder.id},</if>
+              <if test= "member !=null and  member.member != null">Member=#{member.member},</if>
+              <if test= "member !=null and member.memberCode != null">MemberCode=#{member.memberCode},</if>
+              <if test= "member !=null and member.memberName!= null">MemberName=#{member.memberName},</if>
+              <if test= "member !=null and member.memberMobile!= null">MemberMobile=#{member.memberMobile},</if>
+              <if test= "member !=null and member.memberGrade!= null">MemberGrade=#{member.memberGrade},</if>
+              <if test= "shoppingGuide != null">ShoppingGuide=#{shoppingGuide.id},</if>
+              <if test= "quantity != null">Quantity=#{quantity},</if>
+              <if test= "amount != null">Amount=#{amount},</if>
+              <if test= "discount != null">Discount=#{discount},</if>
+              <if test= "minusChange != null">MinusChange=#{minusChange},</if>
+              <if test= "payable != null">Payable=#{payable},</if>
+              <if test= "paid != null">Paid=#{paid},</if>
+              <if test= "excess != null">Excess=#{excess},</if>
+              <if test= "cancelPromotion != null">CancelPromotion=#{cancelPromotion},</if>
+              <if test= "status != null">Status=#{status},</if>
+              <if test= "creator != null">Creator=#{creator},</if>
+              <if test= "created != null">Created=#{created},</if>
+              <if test= "finished != null">Finished=#{finished},</if>
+              <if test= "toBaison != null">ToBaiSon=#{toBaison},</if>
+         </set>
+    </sql >
+	
+	<insert id="saveSalesOrderDetail" parameterType="java.util.List">
+		insert into SalesOrderDetails (ID,Client,SalesOrder,TransClass,Store,SalesDate,Code,SerialNo,ItemClass,Item,Quantity,SalesUnit,BasicQuantity,BasicUnit,
+		Conversion,Price,Amount,Discount,MinusChange,Payable,Promotion,Color,Size)   
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id},#{item.client.id},#{item.salesOrder.id},#{item.transClass},#{item.store.id},#{item.salesDate},#{item.code},#{item.serialNo},#{item.itemClass.code},#{item.material.id},#{item.quantity},#{item.salesUnit.id},#{item.basicQuantity},#{item.basicUnit.id},#{item.conversion},#{item.price},#{item.amount},#{item.discount},#{item.minusChange},#{item.payable},#{item.promotion.id},#{item.color.id},#{item.size.id})  
+    </foreach>   
+	
+	</insert>
+	
+	<insert id="saveSalesOrderDiscount" parameterType="java.util.List">
+		insert into SalesOrderDiscount (ID,Client,SalesOrder,TransClass,Store,SalesDate,Code,DISC,MAT,Amount)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >  
+		 (#{item.id},#{item.client.id},#{item.salesOrder.id},#{item.transClass},#{item.store.id},#{item.salesDate},#{item.code},#{item.disc},#{item.mat},#{item.amount})
+        </foreach>  
+	</insert>
+	
+	<insert id="saveSalesOrderPay" parameterType="java.util.List">
+		insert into SalesOrderPay (ID,Client,SalesOrder,TransClass,Store,SalesDate,Code,SerialNo,PayTime,Payment,Amount,Changed,Excess,TransNo,Points)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >  
+		 (#{item.id},#{item.client.id},#{item.salesOrder.id},#{item.transClass},#{item.store.id},#{item.salesDate},#{item.code},#{item.serialNo},#{item.payTime},#{item.payment.code},#{item.amount},#{item.changed},#{item.excess},#{item.transNo},#{item.points})
+        </foreach>  
+	</insert>
+	
+	
+	<select id="getSalesOrderPayByCondition" resultMap="salesOrderPay" parameterType="java.util.Map">
+	    SELECT Payment,SUM(Amount) AS Amount FROM SalesOrderPay sp WHERE sp.TransClass='SO'
+	    
+	    and sp.Store=#{storeId} and sp.Client=#{clientId}
+	    <if test="startDate != null">
+	              <![CDATA[ and sp.SalesDate>=#{startDate}]]>
+	    </if>
+	    <if test="endDate != null">
+	              <![CDATA[ and sp.SalesDate<=#{endDate}]]>
+	    </if>
+	   GROUP BY Payment
+	    order by  SalesDate desc
+	   
+	</select>
+	
+	<select id="getSalesOrderPageByDate" resultMap="salesOrder" parameterType="java.util.Map">
+		select so.* from SalesOrder so
+		where so.TransClass='SO'
+		and so.Store=#{storeId} and so.Client=#{clientId}
+		
+		<if test="code != null">
+		        and so.Code=#{code}
+		</if>
+		<if test="startDate != null">
+				<![CDATA[  and so.SalesDate>=#{startDate} ]]>
+		</if>
+		<if test="endDate != null">
+				<![CDATA[  and so.SalesDate<=#{endDate}]]>
+		</if>
+	
+		order by SalesDate desc
+		<if test="start != null and limit != null">
+				limit #{start},#{limit}
+		</if>
+	</select>
+	
+	<select id="getSalesOrderPageByMaterial" resultMap="salesOrder" parameterType="java.util.Map">
+		SELECT so.ID,so.SalesDate,so.Code,so.Quantity,so.Amount FROM SalesOrder so
+		INNER JOIN SalesOrderDetails sd
+		ON sd.SalesOrder=so.ID
+		INNER JOIN Material mt
+		ON sd.Item=mt.ID
+		and so.Store=#{storeId} and so.Client=#{clientId}
+		<if test="matCode != null">
+		        and mt.Code=#{matCode}
+		</if>
+		<if test="startDate != null">
+				<![CDATA[  and sd.SalesDate>=#{startDate} ]]>
+		</if>
+		<if test="endDate != null">
+				<![CDATA[  and sd.SalesDate<=#{endDate}]]>
+		</if>
+		GROUP BY so.ID,so.SalesDate,so.Code,so.Quantity,so.Amount
+		order by so.SalesDate desc
+		<if test="start != null and limit != null">
+				limit #{start},#{limit}
+		</if>
+	</select>
+	
+	<select id="getSalesOrderCountByMaterial" parameterType="java.util.Map" resultType="int">
+	    select count(1) from (
+	           select so.ID from SalesOrder so
+		       INNER JOIN SalesOrderDetails sd
+		       ON sd.SalesOrder=so.ID
+		       INNER JOIN Material mt
+		       ON sd.Item=mt.ID
+		       and so.Store=#{storeId} and so.Client=#{clientId}
+		
+		<if test="matCode != null">
+		        and mt.Code=#{matCode}
+		</if>
+		<if test="startDate != null">
+				<![CDATA[  and sd.SalesDate>=#{startDate} ]]>
+		</if>
+		<if test="endDate != null">
+				<![CDATA[  and sd.SalesDate<=#{endDate}]]>
+		</if>
+	         GROUP BY so.ID,so.SalesDate,so.Code,so.Quantity,so.Amount  
+	    ) a
+		
+		
+		
+	</select>
+	
+	<select id="getSalesOrderDetailCountByMaterial" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(1) FROM (
+	            SELECT 
+		        SUM(sd.Quantity) AS Quantity,SUM(sd.Amount) AS Amount,SUM(sd.Discount) AS Discount,SUM(sd.Payable) AS Payable
+                FROM SalesOrderDetails sd
+                INNER JOIN Material mt
+                ON sd.Item=mt.ID
+		        and sd.Store=#{storeId} and sd.Client=#{clientId}
+		
+		<if test="item != null">
+		        and mt.Code=#{item}
+		</if>
+		<if test="startDate != null">
+				<![CDATA[  and sd.SalesDate>=#{startDate} ]]>
+		</if>
+		<if test="endDate != null">
+				<![CDATA[  and sd.SalesDate<=#{endDate}]]>
+		</if>
+		GROUP BY sd.Item
+	    
+	    ) a
+		
+	</select>
+	
+	<select id="getSalesOrderDetailPageByCondition" resultMap="salesOrderDetails" parameterType="java.util.Map">
+		        SELECT sd.ID,sd.ItemClass,sd.Item,sd.Color,sd.Size,
+		        SUM(sd.Quantity) AS Quantity,SUM(sd.Amount) AS Amount,SUM(sd.Discount) AS Discount,SUM(sd.Payable) AS Payable
+                FROM SalesOrderDetails sd
+                INNER JOIN Material mt
+                ON sd.Item=mt.ID
+                and sd.Store=#{storeId} and sd.Client=#{clientId}
+		<if test="matCode != null">
+		        and mt.Code=#{matCode}
+		</if>
+		
+		<if test="startDate != null">
+				<![CDATA[  and sd.SalesDate>=#{startDate} ]]>
+		</if>
+		<if test="endDate != null">
+				<![CDATA[  and sd.SalesDate<=#{endDate}]]>
+		</if>
+		GROUP BY sd.Item
+		order BY sd.SalesDate desc
+		<if test="start != null and limit != null">
+				limit #{start},#{limit}
+		</if>
+	</select>
+	
+	<select id="getLimitSalesOrderByFinished" resultMap="salesOrder" parameterType="java.util.Map">
+		select * from SalesOrder where Member is not NULL and Status =1 and TransClass='SO' and ToBaiSon=0
+		<![CDATA[  and Finished>=#{startDate} ]]>
+		<![CDATA[  and Finished<=#{endDate} ]]>
+	</select>
+	
+</mapper>

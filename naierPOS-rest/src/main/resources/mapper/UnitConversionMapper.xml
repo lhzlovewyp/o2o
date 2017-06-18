@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.UnitConversionMapper">
+     
+    
+    <resultMap type="unitConversion" id="unitConversion">
+		<result property="id" column="ID" />
+		<result property="client.id" column="Client" />
+		<result property="unitA.id" column="UnitA" />
+		<result property="qtyA" column="QTYA" />
+		<result property="unitB.id" column="UnitB" />
+		<result property="qtyB" column="QTYB" />
+		<result property="remark" column="Remark" />
+		<result property="status" column="Status" />
+		<result property="creator" column="Creator" />
+		<result property="created" column="Created" />
+		<result property="editor" column="Editor" />
+		<result property="modified" column="Modified" />
+	</resultMap>
+    
+    <resultMap type="unitConversion" id="unitConversionPage" extends="unitConversion">
+		<result property="client.name" column="ClientName" />
+	</resultMap>
+    
+    <select id="getUnitConversion" resultType="unitConversion">
+		select * from UnitConversion
+		where Client=#{clientId} and UnitA=#{unitA} and UnitB=#{unitB}
+	</select>
+    
+	<select id="getUnitConversionByID" parameterType="string" resultMap="unitConversion">
+		SELECT 
+			a.ID,a.Client,a.UnitA,a.QtyA,a.UnitB,a.QtyB,a.Remark,a.Status,a.Creator,a.Created,a.Editor,a.Modified
+		FROM UnitConversion a
+		WHERE a.ID=#{id} 
+	</select>
+	
+	<select id="getUnitConversionPageByCondition" parameterType="java.util.Map" resultMap="unitConversionPage">
+		select a.ID,a.Client,a.UnitA,u1.Name as u1Name,a.QtyA,a.UnitB,u2.Name as u2Name,a.QtyB,a.Remark,a.Status,a.Creator,a.Created,a.Editor,a.Modified
+			,c.Name ClientName
+		FROM UnitConversion a left outer join Client c
+		on a.Client = c.id and c.status = 1
+		left outer join Unit u1 on u1.ID=a.UnitA
+		left outer join Unit u2 on u2.ID=a.UnitB
+		WHERE 
+			a.Status= 1
+			<if test="clientId != null">
+				and a.Client=#{clientId}
+			</if>
+			<if test="uniA != null">
+				and u1.Name=#{uniA}
+			</if>
+			<if test="uniB != null">
+				and u2.Name=#{uniB}
+			</if>
+			<if test="unitAId != null">
+				and a.UnitA=#{unitAId}
+			</if>
+			<if test="unitBId != null">
+				and a.UnitB=#{unitBId}
+			</if>
+			order by a.ID desc
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getUnitConversionCountByCondition" parameterType="java.util.Map" resultType="int">
+		SELECT count(1)
+		FROM UnitConversion a left outer join Client c
+		on a.Client = c.id and c.status = 1
+		left outer join Unit u1 on u1.ID=a.UnitA
+		left outer join Unit u2 on u2.ID=a.UnitB
+		WHERE 
+			a.Status= 1
+			<if test="clientId != null">
+				and a.Client=#{clientId}
+			</if>
+			<if test="clientId != null">
+				and a.Client=#{clientId}
+			</if>
+			<if test="uniA != null">
+				and u1.Name=#{uniA}
+			</if>
+			<if test="uniB != null">
+				and u2.Name=#{uniB}
+			</if>
+			<if test="unitAId != null">
+				and a.UnitA=#{unitAId}
+			</if>
+			<if test="unitBId != null">
+				and a.UnitB=#{unitBId}
+			</if>
+	</select>
+	
+	<delete id="deleteUnitConversionByID" parameterType="string">
+		DELETE FROM UnitConversion where ID =#{id}
+	</delete>
+	
+	<insert id="insertUnitConversion" parameterType="unitConversion">
+		insert into UnitConversion <include refid="unitConversionSet" />
+	</insert>
+	
+	<update id="updateUnitConversion" parameterType="unitConversion" >
+		UPDATE UnitConversion <include refid="unitConversionSet" /> WHERE ID = #{id}
+	</update>
+    
+    <sql id="unitConversionSet">
+		<set >
+			<if test= "id != null">ID=#{id,jdbcType=VARCHAR},</if >
+			<if test= "client != null">Client=#{client.id,jdbcType=VARCHAR},</if >
+			<if test= "unitA != null">UnitA=#{unitA.id,jdbcType=VARCHAR},</if >
+			<if test= "qtyA != null">QtyA=#{qtyA,jdbcType=VARCHAR},</if >
+			<if test= "unitB != null">UnitB=#{unitB.id,jdbcType=VARCHAR},</if >
+			<if test= "qtyB != null">QtyB=#{qtyB,jdbcType=VARCHAR},</if >
+			<if test= "remark != null">Remark=#{remark,jdbcType=VARCHAR},</if >
+			<if test= "status != null">Status=#{status},</if >
+			<if test= "creator != null">Creator=#{creator},</if >
+			<if test= "created != null">Created=#{created},</if >
+			<if test= "editor != null">Editor=#{editor,jdbcType=VARCHAR},</if >
+			<if test= "modified != null">Modified=#{modified},</if >
+		</set>
+	</sql >
+    
+</mapper>

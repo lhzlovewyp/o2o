@@ -1,0 +1,53 @@
+<section class="content">
+	<div class="box">
+		<div class="box-header">
+			<h3 class="box-title">零售参数设定</h3>
+		</div>
+		<div class="box-body">
+			<form class="form-horizontal" role="form" method="post"  name="basicsForm" id="basicsForm" ng-submit="edit(basicsForm.$valid)" novalidate>
+				
+				<div class="form-group">
+					<label for="PriceDecimal" class="col-sm-2 control-label">单价保留小数位数</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="PriceDecimal"
+							name="PriceDecimal" placeholder="单价保留小数位数" value="2" ng-model="form.priceDecimal" ng-change="validNumber('#PriceDecimal','(0,3)',1)">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="ItemDecimal" class="col-sm-2 control-label">商品金额保留小数位数</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="ItemDecimal"
+							name="ItemDecimal" placeholder="商品金额保留小数位数" value="2" ng-model="form.itemDecimal" ng-change="validNumber('#ItemDecimal','(0,3)',1)">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="ItemRoundDown" class="col-sm-2 control-label">商品金额舍去值</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="ItemRoundDown"
+							name="ItemRoundDown" placeholder="商品金额舍去值" value="2" ng-model="form.itemRoundDown" ng-change="validNumber('#ItemRoundDown','(0,10)',1)">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="TransDecimal" class="col-sm-2 control-label">销售单金额保留小数位数</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="TransDecimal"
+							name="TransDecimal" placeholder="销售单金额保留小数位数" value="2" ng-model="form.transDecimal" ng-change="validNumber('#TransDecimal','(0,3)',1)">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="SaleRoundDown" class="col-sm-2 control-label">销售单金额舍去值</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="SaleRoundDown"
+							name="SaleRoundDown" placeholder="销售单金额舍去值" value="2" ng-model="form.saleRoundDown" ng-change="validNumber('#SaleRoundDown','(0,10)',1)">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-4">
+						<button type="button" class="btn btn-danger" ng-click="edit(basicsForm.$valid)">提交</button>
+						<button type="button" class="btn btn-danger" ng-click="cancel();">取消</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

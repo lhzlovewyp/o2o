@@ -1,0 +1,67 @@
+<section class="content">
+	<div class="box">
+		<div class="box-header">
+			<h3 class="box-title">单位换算维护</h3>
+		</div>
+		<div class="box-body">
+			<ul class="nav nav-tabs" id="myTab">
+				<li class="active"><a href="#detail">基本信息</a></li>
+			</ul>
+			<form class="form-horizontal" role="form" method="post"  name="basicsForm" id="basicsForm" ng-submit="edit(basicsForm.$valid)" novalidate>
+				<div class="tab-content" style="margin-top: 20px;">
+					<div class="tab-pane active" id="detail">
+						
+						<div class="form-group">
+							<label for="UnitA" class="col-sm-2 control-label">甲单位</label>
+							<div class="col-sm-4">
+								<select id="UnitA" name="UnitA" class="form-control" ng-model="selUnitA" ng-options="x.show for x in units">
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="QTYA" class="col-sm-2 control-label">甲单位数量</label>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" id="QTYA" name="QTYA"
+									placeholder="甲单位数量" ng-model="form.qtyA" ng-change="validNumber('#QTYA','(0)',1)">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="UnitB" class="col-sm-2 control-label">乙单位</label>
+							<div class="col-sm-4">
+								<select id="UnitB" name="UnitB" class="form-control" ng-model="selUnitB" ng-options="x.show for x in units">
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="QTYB" class="col-sm-2 control-label">乙单位数量</label>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" id="QTYB" name="QTYB"
+									placeholder="乙单位数量" ng-model="form.qtyB" ng-change="validNumber('#QTYB','(0)',1)">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="Remark" class="col-sm-2 control-label">说明</label>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" id="Remark" name="Remark"
+									placeholder="说明" ng-model="form.remark">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="Status" class="col-sm-2 control-label">状态</label>
+							<div class="col-sm-4">
+								<select id="status" name="status" class="form-control" ng-model="selstatus" ng-options="x.show for x in statuses">
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-danger" ng-click="edit(basicsForm.$valid)">提交</button>
+						<button type="button" class="btn btn-danger" ng-click="cancel();">取消</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

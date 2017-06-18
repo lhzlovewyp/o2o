@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.TransClassMapper">
+     
+    
+    <resultMap type="transClass" id="transClass">
+		<result property="code" column="Code" />
+		<result property="name" column="Name" />
+		<result property="status" column="Status" />
+		<result property="creator" column="Creator" />
+		<result property="created" column="Created" />
+		<result property="editor" column="Editor" />
+		<result property="modified" column="Modified" />
+	</resultMap>
+	
+	
+	<select id="getTransClassByCode" parameterType="string" resultMap="transClass">
+		SELECT 
+			*
+		FROM TransClass 
+		WHERE Code=#{code} 
+	</select>
+	
+	<select id="getTransClassByCondition" parameterType="java.util.Map" resultMap="transClass">
+		SELECT 
+			* from TransClass a 
+		WHERE 1=1
+			<if test="code != null">
+				and a.Code=#{code}
+			</if>
+			<if test="likeName != null">
+				and a.Name like CONCAT('%','${likeName}','%' )  
+			</if>
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getTransClassCountByCondition" parameterType="java.util.Map" resultType="int">
+		SELECT count(1)
+		FROM TransClass a WHERE 1=1
+			<if test="code != null">
+				and a.Code=#{code}
+			</if>
+			<if test="likeName != null">
+				and a.Name like CONCAT('%','${likeName}','%' )  
+			</if>
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<delete id="deleteTransClassByCode" parameterType="string">
+		DELETE FROM TransClass where Code =#{code}
+	</delete>
+	
+	<insert id="insertTransClass" parameterType="transClass">
+		insert into TransClass <include refid="transClassSet" />
+	</insert>
+	
+	<update id="updateTransClass" parameterType="TransClass" >
+		UPDATE TransClass <include refid="transClassSet" /> WHERE Code = #{code}
+	</update>
+    
+    <sql id="transClassSet">
+		<set >
+			<if test= "code != null">Code=#{code,jdbcType=VARCHAR},</if >
+			<if test= "name != null">Name=#{name,jdbcType=VARCHAR},</if >
+			<if test= "status != null">Status=#{status},</if >
+			<if test= "creator != null">Creator=#{creator},</if >
+			<if test= "created != null">Created=#{created},</if >
+			<if test= "editor != null">Editor=#{editor,jdbcType=VARCHAR},</if >
+			<if test= "modified != null">Modified=#{modified},</if >
+			
+		</set>
+	</sql >
+	
+	
+	
+</mapper>

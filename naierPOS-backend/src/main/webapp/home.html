@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>首页</title>
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="/backend/statics/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/backend/statics/dist/css/font-awesome.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/backend/statics/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="/backend/statics/dist/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" href="/backend/statics/plugins/angular/ngDialog/css/ngDialog.css">
+  <link rel="stylesheet" href="/backend/statics/plugins/angular/ngDialog/css/ngDialog-theme-default.css">
+  <link rel="stylesheet" href="/backend/statics/plugins/angular/ngDialog/css/ngDialog-theme-plain.css">
+  <link rel="stylesheet" href="/backend/statics/plugins/angular/ngDialog/css/ngDialog-custom-width.css">
+  
+  <link rel="stylesheet" href="/backend/statics/dist/css/isteven-multi-select.css">
+  
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="statics/dist/js/html5shiv.min.js"></script>
+  <script src="statics/dist/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="mainApp">
+<div class="wrapper">
+
+  <header class="main-header" ng-controller="headNavCtrl">
+    <!-- Logo -->
+    <a href="index2.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>{{loginInfo.storeName}}</b></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>{{loginInfo.storeName}}</b></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="javascript:void(0)" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="a_expand">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="user user-menu">
+            <a href="javascript:;;">
+              <img alt="User Image" class="user-image" src="{{loginInfo.displayPhoto || '/backend/statics/dist/images/avatar.png'}}">
+              <span class="hidden-xs">当前登录：{{loginInfo.userName}}</span>
+            </a>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="javascript:;;" class="text-gray" ng-click="goToChangePWD()">修改密码 <i class="fa fa-compass"></i></a>
+          </li>
+          <li>
+            <a href="javascript:;;" class="text-gray" ng-click="logout()">退出 <i class="fa fa-sign-out"></i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="header">主导航</li>
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-users"></i> <span>账户中心</span>
+            <i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            <li class="active"><a href="/backend/list/account"><i class="fa fa-circle-o"></i> 账户管理</a></li>
+            <li><a href="/backend/list/role"><i class="fa fa-circle-o"></i> 角色管理</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="javascript:;;">
+            <i class="fa fa-cubes"></i> <span>管理中心</span>
+            <i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/backend/list/payment"><i class="fa fa-circle-o"></i> 支付类型</a></li>
+            <li><a href="/backend/list/transClass"><i class="fa fa-circle-o"></i> 交易类型</a></li>
+            <li><a href="/backend/list/itemClass"><i class="fa fa-circle-o"></i> 明细类型</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="javascript:;;">
+            <i class="fa fa-dashboard"></i> <span>门店管理</span>
+            <i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/backend/list/store"><i class="fa fa-circle-o"></i> 门店管理</a></li>
+            <li><a href="/backend/list/shoppingGuide"><i class="fa fa-circle-o"></i> 导购员管理</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="javascript:;;">
+            <i class="fa fa-database"></i> <span>基础数据管理</span>
+            <i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/backend/list/color"><i class="fa fa-circle-o"></i> 颜色管理</a></li>
+            <li><a href="/backend/list/size"><i class="fa fa-circle-o"></i> 尺码管理</a></li>
+            <li><a href="/backend/add/materialCategory"><i class="fa fa-circle-o"></i> 品类管理</a></li>
+            <li><a href="/backend/list/unit"><i class="fa fa-circle-o"></i> 计量单位管理</a></li>
+            <li><a href="/backend/list/unitConversion"><i class="fa fa-circle-o"></i> 单位换算维护</a></li>
+            <li><a href="/backend/list/brand"><i class="fa fa-circle-o"></i> 品牌管理</a></li>
+            <li><a href="/backend/list/material"><i class="fa fa-circle-o"></i> 物料管理</a></li>
+            <li><a href="/backend/list/materialProperty"><i class="fa fa-circle-o"></i> 物料属性管理</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="javascript:;;">
+            <i class="fa fa-credit-card"></i> <span>支付管理</span>
+            <i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/backend/list/terminal"><i class="fa fa-circle-o"></i> 收银终端管理</a></li>
+            <li><a href="/backend/list/retailConfig"><i class="fa fa-circle-o"></i> 零售参数设定</a></li>
+            <li><a href="/backend/list/salesConfig"><i class="fa fa-circle-o"></i> 销售交易设定</a></li>
+            <li><a href="/backend/list/clientPayment"><i class="fa fa-circle-o"></i> 商户支付方式</a></li>
+            <li><a href="/backend/list/retailPrice"><i class="fa fa-circle-o"></i> 价格管理</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="javascript:;;">
+            <i class="fa fa-cart-plus"></i> <span>促销管理</span>
+            <i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/backend/list/promotion"><i class="fa fa-circle-o"></i> 促销活动管理</a></li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" >
+   		<div ng-view style="margin-left:230px"></div>
+  </div>
+  <!-- /.content-wrapper -->
+</div>
+
+
+<script type="text/javascript" src="/backend/statics/plugins/jQuery/jQuery-2.2.0.min.js"></script>
+<script type="text/javascript" src="/backend/statics/plugins/jQuery/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="/backend/statics/plugins/jQuery/jquery.ajaxfileupload.js"></script>
+<script type="text/javascript" src="/backend/statics/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/backend/statics/bootstrap/js/bootstrap-treeview.min.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/app.js"></script>
+<script type="text/javascript" src="/backend/statics/plugins/angular/angular.js"></script>
+<script type="text/javascript" src="/backend/statics/plugins/angular/angular-route.js"></script>
+<script type="text/javascript" src="/backend/statics/plugins/angular/ngDialog.min.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/isteven-multi-select.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/sale/Status.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/tm.pagination.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/sale/main.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/sale/baseServices.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/sale/services.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/sale/controllers.js"></script>
+<script type="text/javascript" src="/backend/statics/dist/js/sell.js"></script>
+<script src="/backend/statics/plugins/datepicker/bootstrap-datepicker.js"></script>
+<script src="/backend/statics/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js" charset="UTF-8"></script>
+</body>
+</html>

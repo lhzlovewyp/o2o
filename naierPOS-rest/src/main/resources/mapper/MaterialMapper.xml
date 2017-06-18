@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.MaterialMapper">
+     
+    
+    <resultMap type="material" id="material">
+		<result property="id" column="ID" />
+		<result property="client.id" column="Client" />
+		<result property="code" column="Code" />
+		<result property="name" column="Name" />
+		<result property="abbr" column="Abbr" />
+		<result property="category.id" column="MaterialCategory" />
+		<result property="brand.id" column="Brand" />
+		<result property="basicUnit.id" column="BasicUnit" />
+		<result property="salesUnit.id" column="SalesUnit" />
+		<result property="salesConversion" column="SalesConversion" />
+		<result property="retailPrice" column="RetailPrice" />
+		<result property="barCode" column="BarCode" />
+		<result property="property" column="Property" />
+		<result property="status" column="Status" />
+		<result property="creator" column="Creator" />
+		<result property="created" column="Created" />
+		<result property="editor" column="Editor" />
+		<result property="modified" column="Modified" />
+		<result property="displayPhoto" column="Pic" />
+	</resultMap>
+	
+	<resultMap type="material" id="materialPage" extends="material">
+		<result property="client.name" column="ClientName" />
+	</resultMap>
+	
+	<select id="getMaterialByCondition" resultMap="material">
+		select ID,Client,Code,Name,Abbr,MaterialCategory,Brand,Pic,BasicUnit,SalesUnit,SalesConversion,RetailPrice,BarCode,Property,Status,Creator,Created,Editor,Modified
+		from Material
+		where Status='1' 
+		<if test="clientId !=null"> and Client=#{clientId}</if>
+		<if test="code !=null"> and code=#{code}</if>
+		<if test="barCode !=null"> and Barcode=#{barCode}</if>
+		<if test="id !=null"> and ID=#{id}</if>		
+	</select>
+	
+	<select id="getMaterialByID" parameterType="string" resultMap="material">
+		SELECT 
+			ID,Client,Code,Name,Abbr,MaterialCategory,Brand,Pic,BasicUnit,SalesUnit,SalesConversion,RetailPrice,BarCode,Property,Status,Creator,Created,Editor,Modified
+		FROM Material a
+		WHERE a.ID=#{id} 
+	</select>
+	
+	<select id="getMaterialPageByCondition" parameterType="string" resultMap="materialPage">
+		SELECT 
+			a.ID,a.Client,a.Code,a.Name,a.Abbr,a.MaterialCategory,a.Brand,a.BasicUnit,a.SalesUnit,a.SalesConversion,a.RetailPrice
+			,a.BarCode,a.Property,a.Status,a.Creator,a.Created,a.Editor,a.Modified,a.Pic
+			,c.Name ClientName
+		FROM Material a left outer join Client c
+		on a.Client = c.id and c.status = 1 
+		WHERE 
+			a.Status= 1
+			<if test="clientId != null">
+				and a.Client=#{clientId}
+			</if>
+			<if test="code !=null"> and a.code=#{code}</if>
+			<if test="likeName != null">
+				and a.name like CONCAT('%','${likeName}','%' )  
+			</if>
+			<if test="likeOne != null">
+				and (a.name like CONCAT('%','${likeOne}','%' ) or  a.Code like CONCAT('%','${likeOne}','%' ))
+			</if>
+			order by a.ID desc
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getMaterialCountByCondition" parameterType="string" resultType="int">
+		SELECT count(1)
+		FROM Material a WHERE 
+			a.Status= 1
+			<if test="clientId != null">
+				and a.Client=#{clientId}
+			</if>
+			<if test="code !=null"> and a.code=#{code}</if>
+			<if test="likeName != null">
+				and a.name like CONCAT('%','${likeName}','%' )  
+			</if>
+	</select>
+	
+	<delete id="deleteMaterialByID" parameterType="string">
+		DELETE FROM Material where ID =#{id}
+	</delete>
+	
+	<insert id="insertMaterial" parameterType="material">
+		insert into Material <include refid="materialSet" />
+	</insert>
+	
+	<update id="updateMaterial" parameterType="material" >
+		UPDATE Material <include refid="materialSet" /> WHERE ID = #{id}
+	</update>
+    
+    <sql id="materialSet">
+		<set >
+			<if test= "id != null">ID=#{id,jdbcType=VARCHAR},</if >
+			<if test= "client != null">Client=#{client.id,jdbcType=VARCHAR},</if >
+			<if test= "code != null">Code=#{code,jdbcType=VARCHAR},</if >
+			<if test= "name != null">Name=#{name,jdbcType=VARCHAR},</if >
+			<if test= "abbr != null">Abbr=#{abbr,jdbcType=VARCHAR},</if >
+			<if test= "category != null">MaterialCategory=#{category.id,jdbcType=VARCHAR},</if >
+			<if test= "brand != null">Brand=#{brand.id,jdbcType=VARCHAR},</if >
+			<if test= "basicUnit != null">BasicUnit=#{basicUnit.id,jdbcType=VARCHAR},</if >
+			<if test= "salesUnit != null">SalesUnit=#{salesUnit.id,jdbcType=VARCHAR},</if >
+			<if test= "salesConversion != null">SalesConversion=#{salesConversion,jdbcType=VARCHAR},</if >
+			<if test= "retailPrice != null">RetailPrice=#{retailPrice,jdbcType=VARCHAR},</if >
+			<if test= "barCode != null">BarCode=#{barCode,jdbcType=VARCHAR},</if >
+			<if test= "property != null">Property=#{property,jdbcType=VARCHAR},</if >
+			<if test= "status != null">Status=#{status},</if >
+			<if test= "creator != null">Creator=#{creator},</if >
+			<if test= "created != null">Created=#{created},</if >
+			<if test= "editor != null">Editor=#{editor,jdbcType=VARCHAR},</if >
+			<if test= "modified != null">Modified=#{modified},</if >
+			<if test= "displayPhoto != null">Pic=#{displayPhoto},</if >
+		</set>
+	</sql >
+</mapper>

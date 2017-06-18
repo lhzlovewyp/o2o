@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.PaymentMapper">
+     
+    
+    <resultMap type="payment" id="payment">
+		<result property="code" column="Code" />
+		<result property="name" column="Name" />
+		<result property="status" column="Status" />
+		<result property="creator" column="Creator" />
+		<result property="created" column="Created" />
+		<result property="editor" column="Editor" />
+		<result property="modified" column="Modified" />
+	</resultMap>
+	
+	<select id="getPaymentPageByCondition" parameterType="java.util.Map" resultMap="payment">
+		SELECT 
+			a.Code,a.Name,a.Status,a.Creator,a.Created,a.Editor,a.Modified
+		FROM Payment a
+		WHERE 
+			a.Status= 1
+			order by a.Code desc
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getPaymentByCode" parameterType="string" resultMap="payment">
+		SELECT 
+			*
+		FROM Payment 
+		WHERE Code=#{code} 
+	</select>
+	
+	<select id="getPaymentByCondition" parameterType="java.util.Map" resultMap="payment">
+		SELECT 
+			* from Payment a 
+		WHERE 1=1
+			<if test="code != null">
+				and a.Code=#{code}
+			</if>
+			<if test="likeName != null">
+				and a.Name like CONCAT('%','${likeName}','%' )  
+			</if>
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getPaymentCountByCondition" parameterType="java.util.Map" resultType="int">
+		SELECT count(1)
+		FROM Payment a WHERE 1=1
+			<if test="code != null">
+				and a.Code=#{code}
+			</if>
+			<if test="likeName != null">
+				and a.Name like CONCAT('%','${likeName}','%' )  
+			</if>
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<delete id="deletePaymentByCode" parameterType="string">
+		DELETE FROM Payment where Code =#{code}
+	</delete>
+	
+	<insert id="insertPayment" parameterType="payment">
+		insert into Payment <include refid="paymentSet" />
+	</insert>
+	
+	<update id="updatePayment" parameterType="payment" >
+		UPDATE Payment <include refid="paymentSet" /> WHERE Code = #{code}
+	</update>
+    
+    <sql id="paymentSet">
+		<set >
+			<if test= "code != null">Code=#{code,jdbcType=VARCHAR},</if >
+			<if test= "name != null">Name=#{name,jdbcType=VARCHAR},</if >
+			<if test= "status != null">Status=#{status},</if >
+			<if test= "creator != null">Creator=#{creator},</if >
+			<if test= "created != null">Created=#{created},</if >
+			<if test= "editor != null">Editor=#{editor,jdbcType=VARCHAR},</if >
+			<if test= "modified != null">Modified=#{modified},</if >
+			
+		</set>
+	</sql >
+	
+	
+	
+</mapper>

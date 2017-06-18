@@ -1,0 +1,62 @@
+ <!-- Content Header (Page header) -->
+<div>
+<section class="content-header">
+      <h1>
+        当前营业日期
+        <strong style="color:red;">{{info.saleDate | date:'yyyy-MM-dd'}}</strong>
+        <a class="btn btn-warning btn-flat" style="float:right;"><i class="fa fa-rmb"></i> 读账</a>
+        <a class="btn btn-primary btn-flat" style="float:right;" ng-click="dayReport();"><i class="fa fa-credit-card"></i> 日结</a> 
+      </h1>
+     </section>
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-xs-4">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>¥ {{info.perTicketSales}}</h3>
+
+              <p>客单价</p>
+            </div>
+            <div class="icon">
+             <i class="fa fa-cny"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-xs-4">
+          <!-- small box -->
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>¥ {{info.salesAmount}}</h3>
+
+              <p>销售金额</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-inbox"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-xs-4">
+          <!-- small box -->
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3>{{info.orders}}</h3>
+
+              <p>销售笔数</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-bar-chart"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+

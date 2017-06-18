@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joker.common.mapper.StoreMapper">
+     
+    
+    <resultMap type="store" id="store">
+		<result property="id" column="ID" />
+		<result property="code" column="Code" />
+		<result property="name" column="Name" />
+		<result property="opened" column="Opened" />
+		<result property="address" column="Address" />
+		<result property="contacts" column="Contacts" />
+		<result property="client.id" column="ClientID" />
+		<result property="status" column="Status" />
+		<result property="creator" column="Creator" />
+		<result property="created" column="Created" />
+		<result property="editor" column="Editor" />
+		<result property="modified" column="Modified" />
+	</resultMap>
+    <select id="getStoreById" parameterType="string" resultMap="store">
+		SELECT s.ID,s.Code,s.Name,s.Opened,s.Address,s.Contacts,s.Client as ClientID ,s.Status,s.Creator,s.Created,s.Editor,s.Modified
+		FROM Store s left join Client c on c.id=s.Client WHERE  s.ID = #{id}
+	</select>
+	
+	 <select id="getStoresByAid" parameterType="string" resultMap="store">
+	 	select s.*,a.* from Store s,AccountStore a where s.id=a.Store and a.Account=#{accountId}
+	 </select>
+	
+	<select id="getStoreByClientAndCode" parameterType="map" resultMap="store">
+		SELECT s.ID,s.Code,s.Name,s.Opened,s.Address,s.Contacts,s.Client as ClientID ,s.Status,s.Creator,s.Created,s.Editor,s.Modified
+		FROM Store s left join Client c on c.id=s.Client WHERE s.Status = 1 and s.Code = #{code} and s.Client = #{client.ID}
+	</select>
+	
+	<select id="getStorePageByCondition" parameterType="java.util.Map" resultMap="store">
+		SELECT 
+			s.ID,s.Code,s.Name,s.Opened,s.Address,s.Contacts,s.Client as ClientID ,s.Status,s.Creator,s.Created,s.Editor,s.Modified
+		FROM Store s left join Client c on s.Client = c.id and c.status = 1 
+		WHERE 1 = 1
+			<if test="clientId != null">
+				and s.Client=#{clientId}
+			</if>
+			<if test="code != null">
+				and s.Code=#{code}
+			</if>
+			<if test="likeName != null">
+				and s.Name like CONCAT('%','${likeName}','%' )  
+			</if>
+			order by s.Code
+			<if test="start != null and limit != null">
+				limit #{start},#{limit}
+			</if>
+	</select>
+	
+	<select id="getStoreCountByCondition" parameterType="java.util.Map" resultType="int">
+		SELECT count(1)
+		FROM Store s WHERE s.Status= 1
+			<if test="clientId != null">
+				and s.Client=#{clientId}
+			</if>
+	</select>
+	
+	<delete id="deleteStoreById" parameterType="string">
+		DELETE FROM Store where ID =#{id}
+	</delete>
+	
+	<insert id="insertStore" parameterType="store">
+		insert into Store <include refid="storeSet" />
+	</insert>
+	
+	<update id="updateStore" parameterType="store" >
+		UPDATE Store <include refid="storeSet" /> WHERE ID = #{id}
+	</update>
+    
+    <sql id="storeSet">
+		<set >
+			<if test= "id != null">ID=#{id,jdbcType=VARCHAR},</if >
+			<if test= "code != null">Code=#{code,jdbcType=VARCHAR},</if >
+			<if test= "name != null">Name=#{name,jdbcType=VARCHAR},</if >
+			<if test= "status != null">Status=#{status,jdbcType=VARCHAR},</if >
+			<if test= "opened != null">Opened=#{opened},</if >
+			<if test= "address != null">Address=#{address,jdbcType=VARCHAR},</if >
+			<if test= "contacts != null">Contacts=#{contacts,jdbcType=VARCHAR},</if >
+			<if test= "client != null">Client=#{client.id,jdbcType=VARCHAR},</if >
+			<if test= "creator != null">Creator=#{creator,jdbcType=VARCHAR},</if >
+			<if test= "created != null">Created=#{created},</if >
+			<if test= "editor != null">Editor=#{editor,jdbcType=VARCHAR},</if >
+			<if test= "modified != null">Modified=#{modified},</if >
+		</set>
+	</sql >
+    
+	
+
+</mapper>
